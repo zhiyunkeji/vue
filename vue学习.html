@@ -4,50 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>vue生命周期</title>
+    <title>模板语法</title>
     <script src="vue.js"></script>
     <script>
     window.onload = function(){
         new Vue({
             el:"#myDiv",
-            beforeCreate:function(){
-                //this.msg不能修改，不能访问
-                console.log("beforeCreate",this.msg);
-                this.msg = 11111;
+            data:{
+                msg:"Hello",
+                html:"<span>我是通过v-html指令添加的HTML文本</span>",
+                isDisabled:true,
+                url:'https://www.baidu.com/'
             },
-            created:function(){
-               //this.msg可以修改，可以访问
-                console.log("created",this.msg);
-                this.msg = 11111;
-            },
-            beforeMount:function(){
-                //this.msg可以修改，可以访问
-                console.log("beforeMount",this.msg)
-            },
-            mounted:function(){
-                //this.msg可以修改，可以访问
-                console.log("mounted",this.msg);
-            },
-            beforeUpdate:function(){
-                //按下更新修改数据时，会触发本函数
-                console.log("beforeUpdate",this.msg);
-            },
-            updated:function(){
-                //按下更新修改数据后，会触发本函数
-                console.log("updated");
-            },
-            beforeDestroy:function(){
-                console.log("beforeDestroy");
-            },
-            destroyed:function(){
-                console.log("destroyed");
-            },
-            data:{//数据
-                msg:"hellow"
-            },
-            methods:{//方法
-                updated:function(){
-                    this.msg = "Word";
+            methods:{
+                test:function(){
+                    this.msg = "World"
                 }
             }
         });
@@ -57,8 +28,29 @@
 </head>
 <body>
     <div id="myDiv">
-        {{msg}}
-        <button v-on:click="updated">更新</button>
+       <div>1.插值 {{msg}}</div>
+       <div v-once>2.v-once指令：此处插值只改变一次 {{msg}}</div>
+       <button @click="test">更新</button>
+       <hr>
+       <div v-html="html"></div>
+       <!-- 变更之后为<div><span>我是通过v-html指令添加的HTML文本</span></div> -->
+       <button v-bind:disabled="isDisabled">v-bind指令绑定HTML属性</button>
+
+       <hr>
+       使用 JavaScript 表达式:<br>
+       <div>msg+'World': {{msg +'World'}}</div>
+       <div v-bind:id="'list'+msg">v-bind:id="'list'+msg"</div>
+
+       <hr>
+       指令带参数:<br>
+       <a v-bind:href="url"> v-bind:href="url"</a>
+       <a v-on:click="test" href="https://www.baidu.com">不带修饰符</a>
+       <a v-on:click.prevent="test" href="https://www.baidu.com">带修饰符.prevent阻止默认行为</a>
+       <br>
+       以上缩写:<br>
+       <a :href="url">:href="url"</a>
+       <a @click="test" href="https://www.baidu.com">缩写不带修饰符</a>
+       <a @click.prevent="test" href="https://www.baidu.com">缩写带修饰符.prevent阻止默认行为</a>
     </div>
     
 </body>
