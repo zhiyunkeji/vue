@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue生命周期</title>
+    <script src="vue.js"></script>
+    <script>
+    window.onload = function(){
+        new Vue({
+            el:"#myDiv",
+            beforeCreate:function(){
+                //this.msg不能修改，不能访问
+                console.log("beforeCreate",this.msg);
+                this.msg = 11111;
+            },
+            created:function(){
+               //this.msg可以修改，可以访问
+                console.log("created",this.msg);
+                this.msg = 11111;
+            },
+            beforeMount:function(){
+                //this.msg可以修改，可以访问
+                console.log("beforeMount",this.msg)
+            },
+            mounted:function(){
+                //this.msg可以修改，可以访问
+                console.log("mounted",this.msg);
+            },
+            beforeUpdate:function(){
+                //按下更新修改数据时，会触发本函数
+                console.log("beforeUpdate",this.msg);
+            },
+            updated:function(){
+                //按下更新修改数据后，会触发本函数
+                console.log("updated");
+            },
+            beforeDestroy:function(){
+                console.log("beforeDestroy");
+            },
+            destroyed:function(){
+                console.log("destroyed");
+            },
+            data:{//数据
+                msg:"hellow"
+            },
+            methods:{//方法
+                updated:function(){
+                    this.msg = "Word";
+                }
+            }
+        });
+        
+    }
+    </script>
+</head>
+<body>
+    <div id="myDiv">
+        {{msg}}
+        <button v-on:click="updated">更新</button>
+    </div>
+    
+</body>
+</html>
