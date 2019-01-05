@@ -47,16 +47,19 @@
                 },
                 methods: {
                     reversedMsgMethods: function () {
-                        console.log("方法调用了");
+                        console.log("方法调用了",this.msg);
                         return this.msg.split('').reverse().join('');
                     },
+                   test:function(){
+                       console.log("我是为测试最后提出的bug而生的方法")
+                   }
                 },
                 watch: {
                     firstName: function (res) {
-                        this.fullName = res + ' ' + this.lastName;
+                        //this.fullName = res + ' ' + this.lastName;
                     },
                     lastName: function (res) {
-                        this.fullName = this.firstName + ' ' + res;
+                        //this.fullName = this.firstName + ' ' + res;
                     }
                 }
 
@@ -72,6 +75,7 @@
         <div>原来的msg: {{msg}}</div>
         <div>第一次调用计算属性： {{reversedMsg}}</div>
         <div>第一次调用方法： {{reversedMsgMethods()}}</div>
+        
 
         <div>第二次调用计算属性： {{reversedMsg}}</div>
         <div>第二次调用方法： {{reversedMsgMethods()}}</div>
@@ -83,6 +87,8 @@
         <div>监听属性：</div>
         firstName:<input v-model="firstName"><br>
         lastName:<input v-model="lastName"><br>
+        <div>{{firstName}}</div>
+        <div>{{lastName}}</div>
         <div>{{fullName}}</div>
         <div>计算属性:</div>
         <div>{{getFullName}}</div>
@@ -95,6 +101,13 @@
         <hr>
         <h1>监听属性对比属性计算的优点</h1>
         <div>能力有限，暂时不能体会/(ㄒoㄒ)/~~</div>
+
+        <div>发现一个bug 为什么不修改msg，而修改其他data值时,reversedMsgMethods（）依然会调用</div>
+        <button @click="test">测试bug</button>
+        <div><strong>总结：方法如果在页面中通过{{}}调用，则每次页面有内容更新时，
+            <br>不管是否更新的值时与方法关联，方法都会被调用.
+            <br>而事件里的方法test不会被调用</strong>
+        </div>
     </div>
 </body>
 
