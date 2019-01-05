@@ -1,57 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>模板语法</title>
+    <title>计算属性与监听</title>
     <script src="vue.js"></script>
     <script>
-    window.onload = function(){
-        new Vue({
-            el:"#myDiv",
-            data:{
-                msg:"Hello",
-                html:"<span>我是通过v-html指令添加的HTML文本</span>",
-                isDisabled:true,
-                url:'https://www.baidu.com/'
-            },
-            methods:{
-                test:function(){
-                    this.msg = "World"
+        window.onload = function () {
+            new Vue({
+                el: "#myDiv",
+                data: {
+                    msg: "Hello",
+
+                    firstName: "Xiao",
+                    lastName: "Hong",
+                    fullName: "Xiao Hong",
+
+                    firstName1: "Hao",
+                    lastName1: "Liang",
+                },
+                computed: {
+                    reversedMsg: function () {
+                        console.log("属性运算了");
+                        return this.msg.split('').reverse().join('');
+                    },
+
+                    getFullName: function () {//默认提供getter方法
+                        return this.firstName + " " + this.lastName;
+
+                    },
+
+                    getFullName1: {
+                        //getter
+                        get: function () {
+                            return this.firstName1 + " " + this.lastName1;
+                        },
+                        //setter
+                        set: function (val) {
+                            var tem = val.split(" ");
+                            this.firstName1 = tem[0];
+                            this.lastName1 = tem[1];
+                        }
+                    }
+                },
+                methods: {
+                    reversedMsgMethods: function () {
+                        console.log("方法调用了");
+                        return this.msg.split('').reverse().join('');
+                    },
+                },
+                watch: {
+                    firstName: function (res) {
+                        this.fullName = res + ' ' + this.lastName;
+                    },
+                    lastName: function (res) {
+                        this.fullName = this.firstName + ' ' + res;
+                    }
                 }
-            }
-        });
-        
-    }
+
+            });
+
+        }
     </script>
 </head>
+
 <body>
     <div id="myDiv">
-       <div>1.插值 {{msg}}</div>
-       <div v-once>2.v-once指令：此处插值只改变一次 {{msg}}</div>
-       <button @click="test">更新</button>
-       <hr>
-       <div v-html="html"></div>
-       <!-- 变更之后为<div><span>我是通过v-html指令添加的HTML文本</span></div> -->
-       <button v-bind:disabled="isDisabled">v-bind指令绑定HTML属性</button>
+        <h1>计算属性与方法的比较</h1>
+        <div>原来的msg: {{msg}}</div>
+        <div>第一次调用计算属性： {{reversedMsg}}</div>
+        <div>第一次调用方法： {{reversedMsgMethods()}}</div>
 
-       <hr>
-       使用 JavaScript 表达式:<br>
-       <div>msg+'World': {{msg +'World'}}</div>
-       <div v-bind:id="'list'+msg">v-bind:id="'list'+msg"</div>
-
-       <hr>
-       指令带参数:<br>
-       <a v-bind:href="url"> v-bind:href="url"</a>
-       <a v-on:click="test" href="https://www.baidu.com">不带修饰符</a>
-       <a v-on:click.prevent="test" href="https://www.baidu.com">带修饰符.prevent阻止默认行为</a>
-       <br>
-       以上缩写:<br>
-       <a :href="url">:href="url"</a>
-       <a @click="test" href="https://www.baidu.com">缩写不带修饰符</a>
-       <a @click.prevent="test" href="https://www.baidu.com">缩写带修饰符.prevent阻止默认行为</a>
+        <div>第二次调用计算属性： {{reversedMsg}}</div>
+        <div>第二次调用方法： {{reversedMsgMethods()}}</div>
+        <div>观察:从后台打印数据：属性运算了，方法调用了，方法调用了,<br>可知属性只调用了一次，方法调用了两次<strong>？？？？</strong></div>
+        <input v-model="msg" />
+        <div>通过输入框，改变msg的值观察后台,<br>每改变一次，打印出属性运算了，方法调用了，方法调用了，<br><strong>总结：方法每次都会调用，而属性只用当msg改变时才会调用一次，不改变不调用（实现缓存)</strong></div>
+        <hr>
+        <h1>监听属性和计算属性的比较</h1>
+        <div>监听属性：</div>
+        firstName:<input v-model="firstName"><br>
+        lastName:<input v-model="lastName"><br>
+        <div>{{fullName}}</div>
+        <div>计算属性:</div>
+        <div>{{getFullName}}</div>
+        <div><strong>总结：通过对比，发现计算属性只要写一个getFullName计算方法，<br>而监听则需要分别监听firstName,和lastName</strong></div>
+        <hr>
+        <h1>属性的getter与setter</h1>
+        <div>获取属性get: {{getFullName1}}</div>
+        <input v-model="getFullName1" />
+        <div><strong>总结，计算属性默认只提供getter,要实现setter方法需要重写</strong></div>
+        <hr>
+        <h1>监听属性对比属性计算的优点</h1>
+        <div>能力有限，暂时不能体会/(ㄒoㄒ)/~~</div>
     </div>
-    
 </body>
+
 </html>
