@@ -5,109 +5,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>计算属性与监听</title>
+    <title>vue组件</title>
     <script src="vue.js"></script>
     <script>
+        // 全局组件
+        var myC = {
+            template: "<h1>Hello</h1>",
+        }
+        Vue.component("my-hello", myC);
+        //如果template结构比较复杂，可以单独写出来
+        var myC1 = {
+            template:"#template1"
+        }
+        Vue.component("hello-world",myC1);
+
         window.onload = function () {
             new Vue({
-                el: "#myDiv",
-                data: {
-                    msg: "Hello",
-
-                    firstName: "Xiao",
-                    lastName: "Hong",
-                    fullName: "Xiao Hong",
-
-                    firstName1: "Hao",
-                    lastName1: "Liang",
-                },
-                computed: {
-                    reversedMsg: function () {
-                        console.log("属性运算了");
-                        return this.msg.split('').reverse().join('');
-                    },
-
-                    getFullName: function () {//默认提供getter方法
-                        return this.firstName + " " + this.lastName;
-
-                    },
-
-                    getFullName1: {
-                        //getter
-                        get: function () {
-                            return this.firstName1 + " " + this.lastName1;
-                        },
-                        //setter
-                        set: function (val) {
-                            var tem = val.split(" ");
-                            this.firstName1 = tem[0];
-                            this.lastName1 = tem[1];
-                        }
-                    }
-                },
-                methods: {
-                    reversedMsgMethods: function () {
-                        console.log("方法调用了",this.msg);
-                        return this.msg.split('').reverse().join('');
-                    },
-                   test:function(){
-                       console.log("我是为测试最后提出的bug而生的方法")
-                   }
-                },
-                watch: {
-                    firstName: function (res) {
-                        //this.fullName = res + ' ' + this.lastName;
-                    },
-                    lastName: function (res) {
-                        //this.fullName = this.firstName + ' ' + res;
+                el: "#firstDiv",
+                // 局部组件
+                components: {
+                    "my-world":{
+                        template:"<h2>world</h2>",
                     }
                 }
-
-            });
-
+            })
+            new Vue({
+                el:"#secondDiv",
+            })
         }
     </script>
 </head>
-
+<template id="template1">
+    <div>我是一个比较复杂的模板<br>
+        <h1>Hello</h1>
+        <h2>world</h2>
+    </div>
+</template>
 <body>
-    <div id="myDiv">
-        <h1>计算属性与方法的比较</h1>
-        <div>原来的msg: {{msg}}</div>
-        <div>第一次调用计算属性： {{reversedMsg}}</div>
-        <div>第一次调用方法： {{reversedMsgMethods()}}</div>
-        
-
-        <div>第二次调用计算属性： {{reversedMsg}}</div>
-        <div>第二次调用方法： {{reversedMsgMethods()}}</div>
-        <div>观察:从后台打印数据：属性运算了，方法调用了，方法调用了,<br>可知属性只调用了一次，方法调用了两次<strong>？？？？</strong></div>
-        <input v-model="msg" />
-        <div>通过输入框，改变msg的值观察后台,<br>每改变一次，打印出属性运算了，方法调用了，方法调用了，<br><strong>总结：方法每次都会调用，而属性只用当msg改变时才会调用一次，不改变不调用（实现缓存)</strong></div>
-        <hr>
-        <h1>监听属性和计算属性的比较</h1>
-        <div>监听属性：</div>
-        firstName:<input v-model="firstName"><br>
-        lastName:<input v-model="lastName"><br>
-        <div>{{firstName}}</div>
-        <div>{{lastName}}</div>
-        <div>{{fullName}}</div>
-        <div>计算属性:</div>
-        <div>{{getFullName}}</div>
-        <div><strong>总结：通过对比，发现计算属性只要写一个getFullName计算方法，<br>而监听则需要分别监听firstName,和lastName</strong></div>
-        <hr>
-        <h1>属性的getter与setter</h1>
-        <div>获取属性get: {{getFullName1}}</div>
-        <input v-model="getFullName1" />
-        <div><strong>总结，计算属性默认只提供getter,要实现setter方法需要重写</strong></div>
-        <hr>
-        <h1>监听属性对比属性计算的优点</h1>
-        <div>能力有限，暂时不能体会/(ㄒoㄒ)/~~</div>
-
-        <div>发现一个bug 为什么不修改msg，而修改其他data值时,reversedMsgMethods（）依然会调用</div>
-        <button @click="test">测试bug</button>
-        <div><strong>总结：方法如果在页面中通过{{}}调用，则每次页面有内容更新时，
-            <br>不管是否更新的值时与方法关联，方法都会被调用.
-            <br>而事件里的方法test不会被调用</strong>
-        </div>
+    <div id="firstDiv">
+        <my-hello></my-hello>
+        <my-world></my-world>
+        <hello-world></hello-world>
+    </div>
+    <div id="secondDiv">
+        <my-hello></my-hello>
+        <!-- 报错 Unknown custom element: <my-world>
+        <my-world></my-world> -->
     </div>
 </body>
 
