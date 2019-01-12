@@ -47,7 +47,9 @@
 <body>
     <div id="secondDiv">
         <!-- 父组件通过属性传值给子组件 -->
-        <hello-world msg="Hello World" my-msg="值得注意的命名方式" @send="onsend"></hello-world>
+        <hello-world msg="'Hello World'" my-msg="值得注意的命名方式" @send="onsend"></hello-world>
+        <!-- 动态绑定prop -->
+        <hello-world v-bind:msg="'Hello '+ 'World'" my-msg="值得注意的命名方式" @send="onsend"></hello-world>
     </div>
 </body>
 
