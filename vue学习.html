@@ -5,52 +5,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>vue组件</title>
+    <title>vue父子组件数据传递</title>
     <script src="vue.js"></script>
     <script>
-        // 全局组件
-        var myC = {
-            template: "<h1>Hello</h1>",
-        }
-        Vue.component("my-hello", myC);
-        //如果template结构比较复杂，可以单独写出来
         var myC1 = {
-            template:"#template1"
+            template:"#template1",
+            data:function(){
+                return{
+                    param:"XH"
+                }
+            },
+            methods:{
+                send:function(){//通过自定义send事件向，父组件发送数据，父组件通过响应事件接收数据
+                    this.$emit("send",{a:this.param});
+                }
+            },
+            props:["msg","myMsg"],//父传子，通过属性传值
         }
         Vue.component("hello-world",myC1);
 
         window.onload = function () {
             new Vue({
-                el: "#firstDiv",
-                // 局部组件
-                components: {
-                    "my-world":{
-                        template:"<h2>world</h2>",
-                    }
-                }
-            })
-            new Vue({
                 el:"#secondDiv",
+                methods:{
+                onsend:function(e){
+                    alert(e.a);
+                }
+            },
             })
         }
     </script>
 </head>
 <template id="template1">
-    <div>我是一个比较复杂的模板<br>
-        <h1>Hello</h1>
-        <h2>world</h2>
+    <div>
+      {{msg}}<hr>
+      {{myMsg}}
+      <!-- 父组件响应send事件接收子组件传来的参数 -->
+      <button @click="send">send</button>
     </div>
 </template>
 <body>
-    <div id="firstDiv">
-        <my-hello></my-hello>
-        <my-world></my-world>
-        <hello-world></hello-world>
-    </div>
     <div id="secondDiv">
-        <my-hello></my-hello>
-        <!-- 报错 Unknown custom element: <my-world>
-        <my-world></my-world> -->
+        <!-- 父组件通过属性传值给子组件 -->
+        <hello-world msg="Hello World" my-msg="值得注意的命名方式" @send="onsend"></hello-world>
     </div>
 </body>
 
